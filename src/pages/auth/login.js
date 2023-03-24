@@ -15,7 +15,6 @@ export default function login() {
       <div className="container">
         <div className="form">
           <label className="auth-title">Вход</label>
-          <form>
             <div className="form-group">
               <label className="auth-label" htmlFor="phone">
                 Номер телефона
@@ -45,8 +44,7 @@ export default function login() {
                 <Link href={"/auth/register"}>Нет аккаунта? Регистрация</Link>
               </label>
             </div>
-            <button className="submit-button" onClick={() => {}}>Далее</button>
-          </form>
+            <button className="submit-button" onClick={() => {}}>Войти</button>
         </div>
       </div>
     </div>
