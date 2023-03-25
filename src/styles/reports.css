@@ -1,0 +1,108 @@
+.tabs {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tab {
+  cursor: pointer;
+  background: #F5F5F5;
+  color: #7265FF;
+  width: 450px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s all ease;
+}
+
+.tab:hover {
+  background: #e4e4e4;
+}
+
+.tab-title {
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: medium;
+}
+
+.tab.active {
+  background: #7265FF;
+  color: #F5F5F5;
+}
+
+.applications {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.content {
+  margin: 20px;
+}
+
+.application {
+  background: #F5F5F5;
+  border-radius: 10px;
+  font-size: 20px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.application-contacts {
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+}
+
+.application-info {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  margin: 15px 0 15px 0;
+}
+
+.buttons-app {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.accept-btn {
+  background: #7265FF;
+  width: 220px;
+  height: 50px;
+  color: white;
+  border-radius: 10px;
+  font-size: 20px;
+  transition: 0.3s ease all;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.accept-btn:hover {
+  background: #5A63FF;
+}
+
+.decline-btn {
+  background: #FF0000;
+  width: 220px;
+  height: 50px;
+  color: white;
+  border-radius: 10px;
+  font-size: 20px;
+  transition: 0.3s ease all;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.decline-btn:hover {
+  background: #ff6868;
+}

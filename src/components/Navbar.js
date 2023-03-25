@@ -1,13 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 function Navbar() {
   const [token, setToken] = useState(null);
+  const [role, setRole] = useState(null);
 
   useEffect(() => {
-      setToken(localStorage.getItem("token"));
-  }, [])
+    setToken(localStorage.getItem("token"));
+    setRole(localStorage.getItem("role"));
+  }, []);
 
   return (
     <nav>
@@ -28,9 +30,11 @@ function Navbar() {
         <div className="menu-item">
           <Link href="/contacts">Контакты</Link>
         </div>
-        <div className="menu-item">
-          <Link href="/reports">Отчетность</Link>
-        </div>
+        {role === "admin" && (
+          <div className="menu-item">
+            <Link href="/reports">Отчетность</Link>
+          </div>
+        )}
         <div className="menu-item">
           <Link href="/requests">Заявки</Link>
         </div>
@@ -62,14 +66,10 @@ function Navbar() {
       {!token && (
         <div className="right-menu">
           <div className="auth-item">
-            <Link href="/auth/login">
-            Вход
-            </Link>
+            <Link href="/auth/login">Вход</Link>
           </div>
           <div className="auth-item">
-          <Link href="/auth/register">
-            Регистрация
-            </Link>
+            <Link href="/auth/register">Регистрация</Link>
           </div>
         </div>
       )}

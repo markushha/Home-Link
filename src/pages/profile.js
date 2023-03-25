@@ -18,7 +18,7 @@ export default function profile() {
         token: localStorage.getItem("token"),
       });
       setResponse(res.data);
-      console.log(res);
+      localStorage.setItem("role", res.data.role);
     } catch (err) {
       console.log(err.message);
     }
@@ -59,6 +59,13 @@ export default function profile() {
                 height="44"
                 onClick={() => {
                   localStorage.removeItem("token");
+                  localStorage.removeItem("iin");
+                  localStorage.removeItem("username");
+                  localStorage.removeItem("zhk");
+                  localStorage.removeItem("appartamentNumber");
+                  localStorage.removeItem("role");
+                  localStorage.removeItem("phoneNumber");
+                  localStorage.removeItem("_id");
                   window.location.href = "/";
                 }}
               />

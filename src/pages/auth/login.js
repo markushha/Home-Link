@@ -15,6 +15,13 @@ export default function login() {
           password: password,
       });
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.user.role);
+      localStorage.setItem("iin", response.data.user.iin);
+      localStorage.setItem("zhk", response.data.user.zhk);
+      localStorage.setItem("appartamentNumber", response.data.user.appartamentNumber);
+      localStorage.setItem("phoneNumber", response.data.user.phoneNumber);
+      localStorage.setItem("_id", response.data.user._id);
+      localStorage.setItem("username", response.data.user.username);
       window.location.replace("/");
     } catch (err) {
       console.log(err.message);

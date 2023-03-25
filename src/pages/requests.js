@@ -8,26 +8,20 @@ import LongBar from "@/components/LongBar";
 import client from "../../app/clients/client";
 import Bar from "@/components/Bar";
 import { v4 as uuidv4 } from "uuid";
+import Modal from "@/components/Modal";
 
 function Requests() {
   const [token, setToken] = useState(null);
   const [search, setSearch] = useState("");
-  const [response, setResponse] = useState(null);
   const [problem, setProblem] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
+  
+  const [modal, setModal] = useState(false);
+  const [error, setError] = useState(null);
 
-  const getUserData = async () => {
-    try {
-      const res = await client.post("/getuserdata", {
-        token: localStorage.getItem("token"),
-      });
-      setResponse(res.data);
-      console.log(res.data);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+  const [zhk, setZhk] = useState();
+  const [appartamentNumber, setAppartamentNumber] = useState();
 
   const searchHandler = () => {
     console.log(search);
@@ -42,16 +36,26 @@ function Requests() {
         category: category,
         price: price,
         status: 0,
+        sender: localStorage.getItem("username"),
+        phoneNumber: localStorage.getItem("phoneNumber"),
       });
-      console.log(res.data);
+
+      localStorage.setItem("application_id", res.data.id);
+
+      setPrice("");
+      setProblem("");
+      setCategory("");
+      setPrice("");
+      setModal(true);
     } catch (err) {
-      console.log(err.message);
+      setError(err.message);
     }
   };
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
-    getUserData();
+    setZhk(localStorage.getItem("zhk"));
+    setAppartamentNumber(localStorage.getItem("appartamentNumber"));
   }, []);
 
   if (!token) return <UnAuthorized />;
@@ -84,60 +88,84 @@ function Requests() {
                 />
               </div>
               <div className="w-[100%]">
-                {/* <LongBar title={`ЖК ${response.zhk}, квартира ${response.appartamentNumber}`} /> */}
+                <LongBar title={`ЖК ${zhk}, квартира ${appartamentNumber}`} />
               </div>
             </div>
-            <div className="middle">
-              <div className="mt-[40px] self-start">
+            <div className="middle-req">
+              <div className="flex items-center justify-center self-start">
                 <label className="text-[24px]">
                   Выберите категорию вашей проблемы
                 </label>
               </div>
-              <div className="mt-[20px] category-bars ">
-                <Bar
-                  active={category === "Квартира" ? true : false}
+              <div className="mt-[20px] category-bars">
+                <div
                   onClick={() => {
                     setCategory("Квартира");
                   }}
-                  title={"Квартира"}
-                  path={"/icons/app.svg"}
-                />
-                <Bar
-                  active={category === "Подьезд" ? true : false}
+                >
+                  <Bar
+                    active={category === "Квартира" ? true : false}
+                    title={"Квартира"}
+                    path={"/icons/app.svg"}
+                  />
+                </div>
+                <div
                   onClick={() => {
                     setCategory("Подьезд");
                   }}
-                  title={"Подьезд"}
-                  path={"/icons/ladder.svg"}
-                />
-                <Bar
-                  active={category === "Паркинг" ? true : false}
+                >
+                  <Bar
+                    active={category === "Подьезд" ? true : false}
+                    title={"Подьезд"}
+                    path={"/icons/ladder.svg"}
+                  />
+                </div>
+                <div
                   onClick={() => {
                     setCategory("Паркинг");
                   }}
-                  title={"Паркинг"}
-                  path={"/icons/car.svg"}
-                />
-                <Bar
-                  active={category === "Фасад" ? true : false}
+                >
+                  <Bar
+                    active={category === "Паркинг" ? true : false}
+                    title={"Паркинг"}
+                    path={"/icons/car.svg"}
+                  />
+                </div>
+                <div
                   onClick={() => {
                     setCategory("Фасад");
                   }}
-                  title={"Фасад"}
-                  path={"/icons/trowel.svg"}
-                  size={50}
-                />
-                <Bar
-                  active={category === "Благоустройство" ? true : false}
+                >
+                  <Bar
+                    active={category === "Фасад" ? true : false}
+                    title={"Фасад"}
+                    path={"/icons/trowel.svg"}
+                    size={50}
+                  />
+                </div>
+                <div
                   onClick={() => {
-                    setCategory("Благоустройство")
+                    setCategory("Благоустройство");
                   }}
-                  title={"Благоустройство"}
-                  path={"/icons/plant.svg"}
-                />
+                >
+                  <Bar
+                    active={category === "Благоустройство" ? true : false}
+                    title={"Благоустройство"}
+                    path={"/icons/plant.svg"}
+                  />
+                </div>
               </div>
             </div>
-            <div className="flex flex-col justify-center items-center w-[100%] mt-[100px]">
+            <div className="flex flex-col justify-center items-center w-[100%] mt-[56px] mb-[50px]">
+            <div className="input-request">
+                <input
+                  type="text"
+                  placeholder="Категория"
+                  className="outline-none bg-[#F5F5F5] w-full ml-6"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                />
+              </div>
               <div className="input-request">
                 <input
                   type="text"
@@ -150,34 +178,31 @@ function Requests() {
               <div className="input-request">
                 <input
                   type="text"
-                  placeholder="Категория"
-                  className="outline-none bg-[#F5F5F5] w-full ml-6"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                />
-              </div>
-
-              <div className="input-request">
-                <input
-                  type="text"
                   placeholder="Стоимость"
                   className="outline-none bg-[#F5F5F5] w-full ml-6"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                 />
               </div>
+              {error && <p className="error">{error}</p>}
               <button
                 className="request-btn"
                 onClick={() => {
-                  requestApplication();
+                  {if (category.trim() && problem.trim() && price.trim()) {
+                    setError("");
+                    requestApplication();
+                  }};
+                  return setError("Заполните все поля");
                 }}
               >
                 Отправить заявку
               </button>
+
             </div>
           </div>
         </div>
       </div>
+      <Modal active={modal} setActive={setModal} />
     </>
   );
 }
