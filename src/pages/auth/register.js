@@ -18,11 +18,9 @@ export default function register() {
   const [error, setError] = useState("");
   const [step, setStep] = useState(0);
 
-  
-
   const handleRegister = async () => {
     try {
-      await client.post("/auth/registration", {
+      await client.post("/registration", {
           username: name,
           iin: iin,
           phone,

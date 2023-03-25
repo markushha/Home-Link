@@ -1,8 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from 'react';
 
 function Navbar() {
-  const token = localStorage.getItem('token')
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+      setToken(localStorage.getItem("token"));
+  }, [])
 
   return (
     <nav>

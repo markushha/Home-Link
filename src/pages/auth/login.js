@@ -10,7 +10,7 @@ export default function login() {
 
   const handleLogin = async () => {
     try {
-      const response = await client.post("/auth/login", {
+      const response = await client.post("/login", {
           username: username,
           password: password,
       });
