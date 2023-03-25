@@ -2,10 +2,24 @@
 import { useState } from "react";
 import Link from "next/link";
 import Head from "next/head";
+import client from "../../../app/clients/client";
 
 export default function login() {
-  const [phone, setPhone] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    try {
+      const response = await client.post("/auth/login", {
+          username: username,
+          password: password,
+      });
+      localStorage.setItem("token", response.data.token);
+      window.location.replace("/");
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   return (
     <div className="wrapper">
@@ -17,13 +31,13 @@ export default function login() {
           <label className="auth-title">Вход</label>
             <div className="form-group">
               <label className="auth-label" htmlFor="phone">
-                Номер телефона
+                Имя пользователя
               </label>
               <input
                 className="register-input"
-                value={phone}
+                value={username}
                 onChange={(e) => {
-                  setPhone(e.target.value);
+                  setUsername(e.target.value);
                 }}
               ></input>
             </div>
@@ -32,6 +46,7 @@ export default function login() {
                 Пароль
               </label>
               <input
+                type="password"
                 className="register-input"
                 value={password}
                 onChange={(e) => {
@@ -44,7 +59,9 @@ export default function login() {
                 <Link href={"/auth/register"}>Нет аккаунта? Регистрация</Link>
               </label>
             </div>
-            <button className="submit-button" onClick={() => {}}>Войти</button>
+            <button className="submit-button" onClick={() => {
+              handleLogin();
+            }}>Войти</button>
         </div>
       </div>
     </div>

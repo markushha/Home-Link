@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-function Navbar({ token }) {
+function Navbar() {
+  const token = localStorage.getItem('token')
+
   return (
     <nav>
       <div className="logo-group">

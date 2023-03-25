@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Head from "next/head";
 import Image from "next/image";
+import client from "../../../app/clients/client";
 
 export default function register() {
   const [name, setName] = useState("");
@@ -16,6 +17,26 @@ export default function register() {
 
   const [error, setError] = useState("");
   const [step, setStep] = useState(0);
+
+  
+
+  const handleRegister = async () => {
+    try {
+      await client.post("/auth/registration", {
+          username: name,
+          iin: iin,
+          phone,
+          role: whoIs,
+          zhk: houseComplex,
+          appartamentNumber: appartment,
+          password: password,
+          phoneNumber: phone
+      });
+      window.location.replace("/auth/login");
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   return (
     <div className="wrapper">
@@ -232,6 +253,7 @@ export default function register() {
                 Пароль
               </label>
               <input
+                type="password"
                 className="register-input"
                 value={password}
                 onChange={(e) => {
@@ -244,6 +266,7 @@ export default function register() {
                 Подтвердите пароль
               </label>
               <input
+                type="password"
                 className="register-input"
                 value={repeatPassword}
                 onChange={(e) => {
@@ -280,18 +303,8 @@ export default function register() {
                     password === repeatPassword
                   ) {
                     setError("");
-                    setStep(3);
-                    console.log(
-                      name,
-                      iin,
-                      phone,
-                      whoIs,
-                      houseComplex,
-                      appartment,
-                      password,
-                      repeatPassword
-                    );
-                    // window.location.pathname = "/auth/login";
+                    
+                    handleRegister();
                     return;
                   }
                   if (password !== repeatPassword) {
