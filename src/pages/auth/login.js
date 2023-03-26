@@ -5,23 +5,22 @@ import Head from "next/head";
 import client from "../../../app/clients/client";
 
 export default function login() {
-  const [username, setUsername] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
+
+  const onKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
 
   const handleLogin = async () => {
     try {
       const response = await client.post("/login", {
-          username: username,
+          phoneNumber: phoneNumber,
           password: password,
       });
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", response.data.user.role);
-      localStorage.setItem("iin", response.data.user.iin);
-      localStorage.setItem("zhk", response.data.user.zhk);
-      localStorage.setItem("appartamentNumber", response.data.user.appartamentNumber);
-      localStorage.setItem("phoneNumber", response.data.user.phoneNumber);
-      localStorage.setItem("_id", response.data.user._id);
-      localStorage.setItem("username", response.data.user.username);
       window.location.replace("/");
     } catch (err) {
       console.log(err.message);
@@ -29,7 +28,7 @@ export default function login() {
   };
 
   return (
-    <div className="wrapper">
+    <div className="wrapper" onKeyDown={(e) => onKeyPress(e)}>
       <Head>
         <title>Вход</title>
       </Head>
@@ -38,13 +37,14 @@ export default function login() {
           <label className="auth-title">Вход</label>
             <div className="form-group">
               <label className="auth-label" htmlFor="phone">
-                Имя пользователя
+                Номер телефона
               </label>
               <input
                 className="register-input"
-                value={username}
+                value={phoneNumber}
+                type="tel"
                 onChange={(e) => {
-                  setUsername(e.target.value);
+                  setPhoneNumber(e.target.value);
                 }}
               ></input>
             </div>

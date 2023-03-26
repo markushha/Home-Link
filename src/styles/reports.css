@@ -106,3 +106,9 @@
 .decline-btn:hover {
   background: #ff6868;
 }
+
+@media (min-width: 800px) and (max-width: 1440px) {
+  .tab {
+    width: 300px;
+  }
+}

@@ -36,6 +36,12 @@ export default function register() {
     }
   };
 
+  const onKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleRegister();
+    }
+  };
+
   return (
     <div className="wrapper">
       <Head>
@@ -141,7 +147,7 @@ export default function register() {
                     alt="admin"
                   />
                 </div>
-                <label className="option-text">Член КСК</label>
+                <label className="option-text">Член ОСИ</label>
               </div>
             </div>
             {error && (
@@ -244,7 +250,7 @@ export default function register() {
           </div>
         )}
         {step === 3 && (
-          <div className="form">
+          <div className="form" onKeyDown={(e) => onKeyPress(e)}>
             <label className="auth-title">Регистрация</label>
             <div className="form-group">
               <label className="auth-label" htmlFor="name">

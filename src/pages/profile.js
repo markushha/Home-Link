@@ -7,18 +7,40 @@ import LongBar from "@/components/LongBar";
 import LongSlimBar from "@/components/LongSlimBar";
 import Link from "next/link";
 import client from "../../app/clients/client";
+import Modal from "@/components/Modal";
 
 export default function profile() {
   const [token, setToken] = useState(null);
-  const [response, setResponse] = useState({});
+  
+  const [zhk, setZhk] = useState(null);
+  const [appartamentNumber, setAppartamentNumber] = useState(null);
+  const [username, setUsername] = useState(null);
+  const [iin, setIin] = useState(null);
+
+  const [modal, setModal] = useState(false);
+
+  const addWorker = async (name, category, phoneNumber) => {
+    try {
+      await client.post("/addContact", {
+        category: category,
+        name: name,
+        phoneNumber: phoneNumber,
+      });
+      setModal(false);
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
 
   const getUserData = async () => {
     try {
-      const res = await client.post("/getuserdata", {
+      const res = await client.post("/getUserData", {
         token: localStorage.getItem("token"),
       });
-      setResponse(res.data);
-      localStorage.setItem("role", res.data.role);
+      setAppartamentNumber(res.data.appartamentNumber);
+      setZhk(res.data.zhk);
+      setUsername(res.data.username);
+      setIin(res.data.iin);
     } catch (err) {
       console.log(err.message);
     }
@@ -45,8 +67,8 @@ export default function profile() {
                 height="100"
               />
               <div className="text-block">
-                <label className="name-title">{response.username}</label>
-                <label className="name-title">ИИН: {response.iin}</label>
+                <label className="name-title">{username}</label>
+                <label className="name-title">ИИН: {iin}</label>
               </div>
             </div>
             <div className="flex items-center justify-center]">
@@ -59,27 +81,21 @@ export default function profile() {
                 height="44"
                 onClick={() => {
                   localStorage.removeItem("token");
-                  localStorage.removeItem("iin");
-                  localStorage.removeItem("username");
-                  localStorage.removeItem("zhk");
-                  localStorage.removeItem("appartamentNumber");
                   localStorage.removeItem("role");
-                  localStorage.removeItem("phoneNumber");
-                  localStorage.removeItem("_id");
                   window.location.href = "/";
                 }}
               />
             </div>
           </div>
           <div className="main">
-            <LongBar title={`ЖК ${response.zhk}, квартира ${response.appartamentNumber}`} />
+            <LongBar title={`ЖК ${zhk}, квартира ${appartamentNumber}`} />
             <LongBar
               title={
-                <Link href="/register">
+                <div onClick={() => {setModal(true)}}>
                   <label className="text-[#7265FF] hover:underline cursor-pointer">
-                    Добавить жилой комплекс
+                    Добавить контакт работника ЖК
                   </label>
-                </Link>
+                </div>
               }
             />
           </div>
@@ -93,6 +109,7 @@ export default function profile() {
           </div>
         </div>
       </div>
+      <Modal active={modal} setActive={setModal} onClick={addWorker} profile={true} />
     </div>
   );
 }

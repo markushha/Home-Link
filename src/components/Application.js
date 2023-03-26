@@ -4,8 +4,8 @@ import client from "../../app/clients/client";
 function Application({ title, status, price, createdAt, updatedAt, id, sender, phoneNumber }) {
   if (status === 0) status = "Новая заявка";
   else if (status === 1) status = "Активная заявка";
-  else if (status === 2) status = "Завершенная заявка";
-  else if (status === 3) status = "Отклоненная заявка";
+  else if (status === 2) status = "Отклоненная заявка";
+  else if (status === 3) status = "Завершенная заявка";
 
   const handleAccept = async () => {
     try {

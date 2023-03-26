@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import client from "../../app/clients/client";
 
 function Navbar() {
   const [token, setToken] = useState(null);
@@ -8,8 +9,19 @@ function Navbar() {
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
-    setRole(localStorage.getItem("role"));
+    getUserData();
   }, []);
+
+  const getUserData = async () => {
+    try {
+      const res = await client.post("/getUserData", {
+        token: localStorage.getItem("token"),
+      });
+      setRole(res.data.role);
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
 
   return (
     <nav>
@@ -21,23 +33,23 @@ function Navbar() {
           width="55"
           height="49"
         />
-        <label className="logo-text">HomeLink</label>
+       <Link href="/"><label className="logo-text">HomeLink</label></Link>
       </div>
       <div className="middle-menu">
         <div className="menu-item">
-          <Link href="/">Главная</Link>
-        </div>
-        <div className="menu-item">
           <Link href="/contacts">Контакты</Link>
         </div>
-        {role === "admin" && (
-          <div className="menu-item">
-            <Link href="/reports">Отчетность</Link>
-          </div>
-        )}
         <div className="menu-item">
           <Link href="/requests">Заявки</Link>
         </div>
+        <div className="menu-item">
+            <Link href="/reports">Отчетность</Link>
+          </div>
+          {role === "admin" && (
+          <div className="menu-item">
+            <Link href="/adminPanel">См. Заявки</Link>
+          </div>
+        )}
       </div>
       {token && (
         <div className="right-menu">

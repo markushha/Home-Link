@@ -22,6 +22,22 @@ function Requests() {
 
   const [zhk, setZhk] = useState();
   const [appartamentNumber, setAppartamentNumber] = useState();
+  const [username, setUsername] = useState();
+  const [phoneNumber, setPhoneNumber] = useState();
+
+  const getUserData = async () => {
+    try {
+      const res = await client.post("/getUserData", {
+        token: localStorage.getItem("token"),
+      });
+      setAppartamentNumber(res.data.appartamentNumber);
+      setZhk(res.data.zhk);
+      setPhoneNumber(res.data.phoneNumber);
+      setUsername(res.data.username);
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
 
   const searchHandler = () => {
     console.log(search);
@@ -36,8 +52,8 @@ function Requests() {
         category: category,
         price: price,
         status: 0,
-        sender: localStorage.getItem("username"),
-        phoneNumber: localStorage.getItem("phoneNumber"),
+        sender: username,
+        phoneNumber: phoneNumber,
       });
 
       localStorage.setItem("application_id", res.data.id);
@@ -47,6 +63,7 @@ function Requests() {
       setCategory("");
       setPrice("");
       setModal(true);
+      setError("");
     } catch (err) {
       setError(err.message);
     }
@@ -56,6 +73,7 @@ function Requests() {
     setToken(localStorage.getItem("token"));
     setZhk(localStorage.getItem("zhk"));
     setAppartamentNumber(localStorage.getItem("appartamentNumber"));
+    getUserData();
   }, []);
 
   if (!token) return <UnAuthorized />;
@@ -158,13 +176,9 @@ function Requests() {
             </div>
             <div className="flex flex-col justify-center items-center w-[100%] mt-[56px] mb-[50px]">
             <div className="input-request">
-                <input
-                  type="text"
-                  placeholder="Категория"
-                  className="outline-none bg-[#F5F5F5] w-full ml-6"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                />
+                <div className="outline-none bg-[#F5F5F5] w-full ml-6">
+                  <p>{category}</p>
+                </div>
               </div>
               <div className="input-request">
                 <input
@@ -202,7 +216,7 @@ function Requests() {
           </div>
         </div>
       </div>
-      <Modal active={modal} setActive={setModal} />
+      <Modal active={modal} setActive={setModal} profile={false}/>
     </>
   );
 }
