@@ -54,7 +54,7 @@ function Navbar() {
       {token && (
         <div className="right-menu">
           <div className="nav-icon">
-            <Link href="notifications">
+            <Link href="/requests">
               <Image
                 src="/icons/notifs.svg"
                 alt="notifications"

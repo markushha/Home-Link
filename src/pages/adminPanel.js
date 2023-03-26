@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import client from "../../app/clients/client";
 import Application from "@/components/Application";
 import Empty from "@/components/Empty";
+import Meta from "../../app/utils/Meta";
 
 export default function adminPanel() {
   const [token, setToken] = useState(null);
@@ -72,6 +73,7 @@ export default function adminPanel() {
   return (
     <div className="wrapper">
       <Navbar />
+      <Meta title="Админ Панель" />
       <div className="flex flex-col items-center justify-center w-[80%] mt-[120px]">
         <div className="tabs">
           <div onClick={() => setStatus(0)}>

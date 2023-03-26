@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import client from "../../app/clients/client";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
+import Meta from "../../app/utils/Meta";
 
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -110,6 +111,7 @@ export default function reports() {
   return (
     <div className="wrapper">
       <Navbar />
+      <Meta title="Отчетность" />
       <div className="container mt-[100px]">
         <div className="flex flex-col items-center justify-center m-auto">
           <div className="m-auto w-[450px] h-[500px] items-center flex flex-col">

@@ -8,6 +8,7 @@ import LongSlimBar from "@/components/LongSlimBar";
 import Link from "next/link";
 import client from "../../app/clients/client";
 import Modal from "@/components/Modal";
+import Meta from "../../app/utils/Meta";
 
 export default function profile() {
   const [token, setToken] = useState(null);
@@ -16,6 +17,7 @@ export default function profile() {
   const [appartamentNumber, setAppartamentNumber] = useState(null);
   const [username, setUsername] = useState(null);
   const [iin, setIin] = useState(null);
+  const [role, setRole] = useState(null);
 
   const [modal, setModal] = useState(false);
 
@@ -41,6 +43,7 @@ export default function profile() {
       setZhk(res.data.zhk);
       setUsername(res.data.username);
       setIin(res.data.iin);
+      setRole(res.data.role);
     } catch (err) {
       console.log(err.message);
     }
@@ -56,6 +59,7 @@ export default function profile() {
   return (
     <div className="wrapper">
       <Navbar />
+      <Meta title="Личный кабинет" />
       <div className="flex items-center w-[80%] mt-[120px]">
         <div className="flex flex-col w-full items-center justify-center">
           <div className="top-profile">
@@ -89,7 +93,7 @@ export default function profile() {
           </div>
           <div className="main">
             <LongBar title={`ЖК ${zhk}, квартира ${appartamentNumber}`} />
-            <LongBar
+            {role === "admin" && (<LongBar
               title={
                 <div onClick={() => {setModal(true)}}>
                   <label className="text-[#7265FF] hover:underline cursor-pointer">
@@ -97,7 +101,7 @@ export default function profile() {
                   </label>
                 </div>
               }
-            />
+            />)}
           </div>
           <div className="bottom mb-[40px]">
             <LongSlimBar title="История запросов"/>
