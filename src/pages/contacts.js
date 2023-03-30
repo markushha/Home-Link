@@ -87,8 +87,8 @@ function Contacts() {
     getContacts();
   }, []);
 
-  if (loading) return <Loading />;
   if (!token) return <UnAuthorized />;
+  if (loading) return <Loading />;
 
   return (
     <>
