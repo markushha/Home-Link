@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import client from "../../app/clients/client";
+import InputMask from "react-input-mask";
+
 
 function Modal({ active, setActive, profile, onClick }) {
   const [category, setCategory] = useState(null);
@@ -47,20 +48,23 @@ function Modal({ active, setActive, profile, onClick }) {
               <label className="auth-label" htmlFor="phone">
                 Номер телефона
               </label>
-              <input
+              <InputMask
+                mask="+7 (999) 999 99 99"
+                placeholder="Номер телефона"
                 className="register-input"
+                maskChar=""
                 value={phoneNumber}
-                type="tel"
                 onChange={(e) => {
                   setPhoneNumber(e.target.value);
                 }}
-              ></input>
+              />
             </div>
             <div className="form-group">
               <label className="auth-label" htmlFor="phone">
                 Имя
               </label>
               <input
+                placeholder="Иван"
                 type="text"
                 className="register-input"
                 value={name}
@@ -74,6 +78,7 @@ function Modal({ active, setActive, profile, onClick }) {
                 Категория работника
               </label>
               <input
+                placeholder="Электрик"
                 type="text"
                 className="register-input"
                 value={category}

@@ -9,24 +9,45 @@ import client from "../../app/clients/client";
 import Bar from "@/components/Bar";
 import { v4 as uuidv4 } from "uuid";
 import Modal from "@/components/Modal";
+import Loading from "@/components/Loading";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Requests() {
   const [token, setToken] = useState(null);
   const [search, setSearch] = useState("");
   const [problem, setProblem] = useState("");
   const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Категория");
   
   const [modal, setModal] = useState(false);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [zhk, setZhk] = useState();
   const [appartamentNumber, setAppartamentNumber] = useState();
   const [username, setUsername] = useState();
   const [phoneNumber, setPhoneNumber] = useState();
 
+  const showToast = () => {
+    toast.error(`${error}`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    setTimeout(() => {
+      setError("");
+    }, 1000);
+  };
+
   const getUserData = async () => {
     try {
+      setLoading(true);
       const res = await client.post("/getUserData", {
         token: localStorage.getItem("token"),
       });
@@ -34,8 +55,10 @@ function Requests() {
       setZhk(res.data.zhk);
       setPhoneNumber(res.data.phoneNumber);
       setUsername(res.data.username);
+      setLoading(false);
     } catch (err) {
-      console.log(err.message);
+      setError(err.message);
+      setLoading(false);
     }
   }
 
@@ -46,6 +69,7 @@ function Requests() {
 
   const requestApplication = async () => {
     try {
+      setLoading(true);
       const res = await client.post("/create", {
         id: uuidv4(),
         title: problem,
@@ -64,8 +88,10 @@ function Requests() {
       setPrice("");
       setModal(true);
       setError("");
+      setLoading(false);
     } catch (err) {
       setError(err.message);
+      setLoading(false);
     }
   };
 
@@ -77,6 +103,7 @@ function Requests() {
   }, []);
 
   if (!token) return <UnAuthorized />;
+  if (loading) return <Loading />;
 
   return (
     <>
@@ -106,7 +133,7 @@ function Requests() {
                 />
               </div>
               <div className="w-[100%]">
-                <LongBar title={`ЖК ${zhk}, квартира ${appartamentNumber}`} />
+                <LongBar title={`${zhk}, квартира ${appartamentNumber}`} />
               </div>
             </div>
             <div className="middle-req">
@@ -198,10 +225,11 @@ function Requests() {
                   onChange={(e) => setPrice(e.target.value)}
                 />
               </div>
-              {error && <p className="error">{error}</p>}
+              {error && showToast()}
               <button
                 className="request-btn"
                 onClick={() => {
+                  if (category === "Категория") return setError("Выберите категорию");
                   {if (category.trim() && problem.trim() && price.trim()) {
                     setError("");
                     requestApplication();
@@ -217,6 +245,7 @@ function Requests() {
         </div>
       </div>
       <Modal active={modal} setActive={setModal} profile={false}/>
+      <ToastContainer />
     </>
   );
 }

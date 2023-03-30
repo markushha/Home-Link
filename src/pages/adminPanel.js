@@ -7,19 +7,40 @@ import client from "../../app/clients/client";
 import Application from "@/components/Application";
 import Empty from "@/components/Empty";
 import Meta from "../../app/utils/Meta";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Loading from "@/components/Loading";
 
 export default function adminPanel() {
   const [token, setToken] = useState(null);
   const [role, setRole] = useState(null);
   const [status, setStatus] = useState(0);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [newApplications, setNewApplications] = useState([]);
   const [activeApplications, setActiveApplications] = useState([]);
   const [completedApplications, setCompletedApplications] = useState([]);
 
+  const showToast = () => {
+    toast.error(`${error}`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    setTimeout(() => {
+      setError("");
+    }, 1000);
+  };
+
   const getApplications = async () => {
     try {
+      setLoading(true);
       const res = await client.get("/getAppsData");
 
       res.data.map((application) => {
@@ -31,19 +52,24 @@ export default function adminPanel() {
           setCompletedApplications((prev) => [...prev, application]);
         }
       })
+      setLoading(false);
     } catch (e) {
       setError(e.message);
+      setLoading(false);
     }
   };
 
   const getUserData = async () => {
     try {
+      setLoading(true);
       const res = await client.post("/getUserData", {
         token: localStorage.getItem("token"),
       });
       setRole(res.data.role);
+      setLoading(false);
     } catch (err) {
-      console.log(err.message);
+      setError(err.message);
+      setLoading(false);
     }
   };
 
@@ -53,6 +79,8 @@ export default function adminPanel() {
     getUserData();
   }, []);
 
+  if (loading) return <Loading />;
+  if (!token) return <UnAuthorized />;
   if (role !== "admin")
     return (
       <div className="flex items-center justify-center h-[100vh] w-[100%]">
@@ -62,13 +90,7 @@ export default function adminPanel() {
         </label>
       </div>
     );
-
-  // if (response) {
-  //   console.log(response);
   
-  // }
-
-  if (!token) return <UnAuthorized />;
 
   return (
     <div className="wrapper">
@@ -137,6 +159,8 @@ export default function adminPanel() {
             : null}
         </div>
       </div>
+      {error && showToast()}
+      <ToastContainer />
     </div>
   );
 }

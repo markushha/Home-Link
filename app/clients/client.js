@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const client = axios.create({
-  baseURL: "https://homelink.onrender.com/",
+  baseURL: "http://localhost:4002",
 });
 
 client.interceptors.request.use((config) => {

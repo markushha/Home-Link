@@ -5,37 +5,63 @@ import UnAuthorized from "@/components/UnAuthorized";
 import Image from "next/image";
 import LongBar from "@/components/LongBar";
 import LongSlimBar from "@/components/LongSlimBar";
-import Link from "next/link";
 import client from "../../app/clients/client";
 import Modal from "@/components/Modal";
 import Meta from "../../app/utils/Meta";
+import Loading from "@/components/Loading";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link";
 
 export default function profile() {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState("");
   
-  const [zhk, setZhk] = useState(null);
-  const [appartamentNumber, setAppartamentNumber] = useState(null);
-  const [username, setUsername] = useState(null);
-  const [iin, setIin] = useState(null);
-  const [role, setRole] = useState(null);
+  const [zhk, setZhk] = useState("");
+  const [appartamentNumber, setAppartamentNumber] = useState("");
+  const [username, setUsername] = useState("");
+  const [iin, setIin] = useState("");
+  const [role, setRole] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [modal, setModal] = useState(false);
+  const [error, setError] = useState(false);
+
+  const showToast = () => {
+    toast.error(`${error}`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    setTimeout(() => {
+      setError("");
+    }, 1000);
+  };
 
   const addWorker = async (name, category, phoneNumber) => {
     try {
+      if (!name || !category || !phoneNumber) return setError("Заполните все поля корректно");
+      setLoading(true);
       await client.post("/addContact", {
         category: category,
         name: name,
         phoneNumber: phoneNumber,
       });
       setModal(false);
+      setLoading(false);
     } catch (e) {
-      console.log(e.message);
+      setError(e.message);
+      setLoading(false);
     }
   }
 
   const getUserData = async () => {
     try {
+      setLoading(true);
       const res = await client.post("/getUserData", {
         token: localStorage.getItem("token"),
       });
@@ -44,8 +70,10 @@ export default function profile() {
       setUsername(res.data.username);
       setIin(res.data.iin);
       setRole(res.data.role);
+      setLoading(false);
     } catch (err) {
-      console.log(err.message);
+      setError(err.message);
+      setLoading(false);
     }
   }
 
@@ -55,6 +83,7 @@ export default function profile() {
   }, []);
 
   if (!token) return <UnAuthorized />;
+  if (loading) return <Loading />;
 
   return (
     <div className="wrapper">
@@ -76,7 +105,7 @@ export default function profile() {
               </div>
             </div>
             <div className="flex items-center justify-center]">
-              <Image className="cursor-pointer" alt="settings" src="/icons/settings-fill.svg" width="44" height="44"/>
+              <Link href="/developing"><Image className="cursor-pointer" alt="settings" src="/icons/settings-fill.svg" width="44" height="44"/></Link>
               <Image
               className="ml-[16px] cursor-pointer"
                 src="/icons/quit-icon.svg"
@@ -92,7 +121,7 @@ export default function profile() {
             </div>
           </div>
           <div className="main">
-            <LongBar title={`ЖК ${zhk}, квартира ${appartamentNumber}`} />
+            <LongBar title={`${zhk}, квартира ${appartamentNumber}`} />
             {role === "admin" && (<LongBar
               title={
                 <div onClick={() => {setModal(true)}}>
@@ -104,16 +133,18 @@ export default function profile() {
             />)}
           </div>
           <div className="bottom mb-[40px]">
-            <LongSlimBar title="История запросов"/>
-            <LongSlimBar title="Личные коммунальные счета"/>
-            <LongSlimBar title="Текущий и капитальный ремонт общего имущества"/>
-            <LongSlimBar title="Действующая кварплата"/>
-            <LongSlimBar title="Получение квитанции  за оплату коммунальных услуг"/>
-            <LongSlimBar title="Oбщедомовой тариф"/>
+            <Link href="/developing"><LongSlimBar title="История запросов"/></Link>
+            <Link href="/developing"><LongSlimBar title="Личные коммунальные счета"/></Link>
+            <Link href="/developing"><LongSlimBar title="Текущий и капитальный ремонт общего имущества"/></Link>
+            <Link href="/developing"><LongSlimBar title="Действующая кварплата"/></Link>
+            <Link href="/developing"><LongSlimBar title="Получение квитанции  за оплату коммунальных услуг"/></Link>
+            <Link href="/developing"><LongSlimBar title="Oбщедомовой тариф"/></Link>
           </div>
         </div>
       </div>
+      {error && showToast()}
       <Modal active={modal} setActive={setModal} onClick={addWorker} profile={true} />
+      <ToastContainer />
     </div>
   );
 }
